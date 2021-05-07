@@ -1,3 +1,4 @@
+import avlTree.AVLTree;
 import redBlackTree.RedBlackTree;
 
 public class Main {
@@ -26,5 +27,21 @@ public class Main {
 
         rbt.remove(10);
         rbt.printTree();
+
+        AVLTree<Integer> avl = new AVLTree<>(17);
+        avl.add(12);
+        avl.add(38);
+        avl.add(3);
+        avl.add(49);
+        avl.add(19);
+        avl.add(100);
+        avl.add(1);
+        avl.add(29);
+        avl.add(46);
+        avl.delete(17);
+        avl.delete(38);
+
+
+        int k =1;
     }
 }
