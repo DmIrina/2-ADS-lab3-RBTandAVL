@@ -23,14 +23,8 @@ public class Main {
         rbt.add(12);
         rbt.add(34);
         rbt.add(36);
-        //       rbt.printTree();
 
-//        var n = rbt.findNode(54);
-//        rbt.remove(15);
-//        rbt.remove(12);
         rbt.remove(10);
         rbt.printTree();
-        int k = 1;
-
     }
 }

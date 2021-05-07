@@ -230,7 +230,7 @@ public class RedBlackTree<E extends Comparable<E>> {
     }
 
 
-    public Node<E> findNode(E findElement) {
+    private Node<E> findNode(E findElement) {
         if (this.root == null) {
             return null;
         }
@@ -424,7 +424,7 @@ public class RedBlackTree<E extends Comparable<E>> {
     }
 
     // node has 0 or 1 child
-    public void removeA01(Node<E> node) {                 // Deleted node has no children or 1 child
+    private void removeA01(Node<E> node) {                 // Deleted node has no children or 1 child
         boolean isLeft = isLeftChild(node);              // deleted Node is left child
         boolean hasLeft = hasLeftChild(node);              // deleted Node has left child
         boolean isBalanced;
