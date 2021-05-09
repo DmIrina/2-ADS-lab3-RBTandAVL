@@ -25,23 +25,28 @@ public class RedBlackTree<E extends Comparable<E>> {
     private void case2(Node<E> node) {
         if (!node.getParent().isNodeRed()) {  // parent is black
             return;
-        } else {
-            case3(node);
         }
+        case3(node);
+
     }
 
     private void case3(Node<E> node) {
+
+        if (node.getParent() == null) {
+            case2(node);
+        }
+
         Node<E> gp = node.getGrandparent();
         Node<E> p = node.getParent();
         Node<E> u = node.getUncle();
-        if (u != null && u.isNodeRed()) {     //parent is red, uncle is red
+
+        if (u.isNodeRed()) {     //parent is red, uncle is red
             p.changeColor();
             u.changeColor();
             gp.changeColor();
             case1(gp);
-        } else {
-            case4(node);
         }
+        case4(node);
     }
 
     private void case4(Node<E> node) {        //parent is red, uncle is black
@@ -195,10 +200,10 @@ public class RedBlackTree<E extends Comparable<E>> {
                 return (E) start.getValue();
             case -1:
                 if (start.getLeft().getValue() != null)
-                return findFrom(start.getLeft(), findElement);
+                    return findFrom(start.getLeft(), findElement);
             case 1:
                 if (start.getRight().getValue() != null)
-                return findFrom(start.getRight(), findElement);
+                    return findFrom(start.getRight(), findElement);
         }
         return null;
     }
@@ -216,12 +221,12 @@ public class RedBlackTree<E extends Comparable<E>> {
             return null;
         }
         Comparable<E> currentValue = start.getValue();
-        if (findElement.compareTo((E) currentValue) < 0){
+        if (findElement.compareTo((E) currentValue) < 0) {
             if (start.getLeft().getValue() != null)
-            return findNodeFrom(start.getLeft(), findElement);
-        } else if(findElement.compareTo((E) currentValue) > 0) {
+                return findNodeFrom(start.getLeft(), findElement);
+        } else if (findElement.compareTo((E) currentValue) > 0) {
             if (start.getRight().getValue() != null)
-            return findNodeFrom(start.getRight(), findElement);
+                return findNodeFrom(start.getRight(), findElement);
         } else {
             return start;
         }
@@ -241,6 +246,10 @@ public class RedBlackTree<E extends Comparable<E>> {
 
     public void remove(E value) {
         Node<E> delNode = findNode(value);
+        if (delNode == null) {
+            return;
+        }
+
         int count = countChildren(delNode);
 
         switch (count) {
@@ -420,19 +429,22 @@ public class RedBlackTree<E extends Comparable<E>> {
             return;
         }
 
-        Node<E> dad = node.getParent();
-        Node<E> brother = getBrother(node, isLeft);
-        Node<E> farNephew = getFarNephew(brother, isLeft);
-        Node<E> nearNephew = getNearNephew(brother, isLeft);
+        if (node == root) {
+            return;
+        }
+
+        Node<E> dad;
+        Node<E> brother;
+        Node<E> farNephew;
+        Node<E> nearNephew;
 
         deleteApply(node);         // deleting node - we don't need it anymore
         node = child;
 
         // in a loop applying the red-black deletion
         // balancing algorithms until the tree is balanced
+        isBalanced = true;
         do {
-            isBalanced = true;
-
             if (node != root) {
                 if (node.getValue() != null) {
                     dad = node.getParent();
@@ -445,57 +457,69 @@ public class RedBlackTree<E extends Comparable<E>> {
                     // if the brother is red -> color the parent red, the brother black, and promote the brother
                     // then go round loop again
 
-                    if (brother.isNodeRed()) {   // brother is red
-                        dad.setRed();
-                        brother.setBlack();
-                        promote(brother);
-                        isBalanced = false;
-                    } else {                        // brother is black -> get far and near nephews
-                        farNephew = getFarNephew(brother, isLeft);
-                        nearNephew = getNearNephew(brother, isLeft);
-
-                        // if the far nephew is red,
-                        // color it black, color the brother the same as the parent,
-                        // color the parent black, and then promote the brother
-
-                        if (farNephew.isNodeRed()) {
-                            farNephew.setBlack();
-                            if (dad.isNodeRed()) {
-                                brother.setRed();
-                            } else {
-                                brother.setBlack();
-                            }
-                            dad.setBlack();
+                    if (brother != null) {
+                        if (brother.isNodeRed()) {   // brother is red
+                            dad.setRed();
+                            brother.setBlack();
                             promote(brother);
-                        } else {                        //far nephew is black
+                            isBalanced = false;
+                        } else {                        // brother is black -> get far and near nephews
 
-                            // if the near nephew is red,
-                            // color it the same color as the parent, color the parent black,
-                            // promote the nephew twice
+                            if (brother.getValue() != null) {
+                                farNephew = getFarNephew(brother, isLeft);
+                                nearNephew = getNearNephew(brother, isLeft);
 
-                            if (nearNephew.isNodeRed()) {
-                                if (dad.isNodeRed()) {
-                                    nearNephew.setRed();
-                                } else {
-                                    nearNephew.setBlack();
-                                }
-                                dad.setBlack();
-                                promote(promote(brother));
+                                // if the far nephew is red,
+                                // color it black, color the brother the same as the parent,
+                                // color the parent black, and then promote the brother
 
-                            } else {                    // near nephew is black
-                                if (dad.isNodeRed()) {
+                                if (farNephew.isNodeRed()) {
+                                    farNephew.setBlack();
+                                    if (dad.isNodeRed()) {
+                                        brother.setRed();
+                                    } else {
+                                        brother.setBlack();
+                                    }
                                     dad.setBlack();
-                                    brother.setRed();
-                                } else {
-                                    brother.setRed();
-                                    node = dad;
+                                    promote(brother);
+                                    isBalanced = false;
+                                } else {                        //far nephew is black
+
+                                    // if the near nephew is red,
+                                    // color it the same color as the parent, color the parent black,
+                                    // promote the nephew twice
+
+                                    if (nearNephew.isNodeRed()) {
+                                        if (dad.isNodeRed()) {
+                                            nearNephew.setRed();
+                                        } else {
+                                            nearNephew.setBlack();
+                                        }
+                                        dad.setBlack();
+                                        promote(promote(brother));
+                                        isBalanced = false;
+
+                                    } else {                    // near nephew is black
+                                        if (dad.isNodeRed()) {
+                                            dad.setBlack();
+                                            brother.setRed();
+                                        } else {
+                                            brother.setRed();
+                                            node = dad;
+                                            isBalanced = false;
+                                        }
+                                        isBalanced = false;
+                                    }
                                     isBalanced = false;
                                 }
+                            } else {
+                                isBalanced = false;
                             }
                         }
                     }
                 }
-            }
+            } else
+            isBalanced = false;
         }
         while (isBalanced);
     }
