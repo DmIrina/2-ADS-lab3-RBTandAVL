@@ -15,7 +15,7 @@ public class RedBlackTree<E extends Comparable<E>> {
     }
 
     private void case1(Node<E> node) {
-        if (node.getParent() == null) {                                        //tree is empty
+        if (node.getParent() == null) {       //tree is empty
             node.setBlack();
             return;
         }
@@ -23,7 +23,7 @@ public class RedBlackTree<E extends Comparable<E>> {
     }
 
     private void case2(Node<E> node) {
-        if (!node.getParent().isNodeRed()) {                         // parent is black
+        if (!node.getParent().isNodeRed()) {  // parent is black
             return;
         } else {
             case3(node);
@@ -34,18 +34,17 @@ public class RedBlackTree<E extends Comparable<E>> {
         Node<E> gp = node.getGrandparent();
         Node<E> p = node.getParent();
         Node<E> u = node.getUncle();
-        if (u.isNodeRed()) {                                       //parent is red, uncle is red
+        if (u != null && u.isNodeRed()) {     //parent is red, uncle is red
             p.changeColor();
             u.changeColor();
             gp.changeColor();
             case1(gp);
         } else {
             case4(node);
-            //case4(gp);
         }
     }
 
-    private void case4(Node<E> node) {                               //parent is red, uncle is black
+    private void case4(Node<E> node) {        //parent is red, uncle is black
         Node<E> gp = node.getGrandparent();
         Node<E> p = node.getParent();
         Node<E> u = node.getUncle();
@@ -91,17 +90,17 @@ public class RedBlackTree<E extends Comparable<E>> {
     private void addToTree(Node<E> added) {
         E value = added.getValue();
         Node<E> current = this.root;
-        while (true) {                                             // 1) add red node in binary tree
+        while (true) {                                      // 1) add red node in binary tree
             Comparable<E> currentValue = current.getValue();
-            if (currentValue.compareTo(value) > 0) {               // if added element is smaller than current
-                if (current.getLeft().getValue() == null) {        // there are no nodes
+            if (currentValue.compareTo(value) > 0) {        // if added element is smaller than current
+                if (current.getLeft().getValue() == null) { // there are no nodes
                     added.setParent(current);
                     current.setLeft(added);
                     return;
                 }
                 current = current.getLeft();
-            } else if (currentValue.compareTo(value) < 0) {         // if added element is bigger than current
-                if (current.getRight().getValue() == null) {        // there are no nodes
+            } else if (currentValue.compareTo(value) < 0) {  // if added element is bigger than current
+                if (current.getRight().getValue() == null) { // there are no nodes
                     added.setParent(current);
                     current.setRight(added);
                     return;
@@ -180,33 +179,6 @@ public class RedBlackTree<E extends Comparable<E>> {
         p.setLeft(gp);
     }
 
-    public void printTree() {
-        print(root);
-    }
-
-    // recursive printing
-    private void print(Node<E> node) {
-        if (node == null) {
-            return;
-        }
-        String line;
-
-
-        if (node.getValue() != null) {
-            line = node.getValue().toString();
-        } else {
-            line = "least";
-        }
-
-        line += node.isNodeRed() ? " red" : " black";
-        if (node.getParent() != null) {
-            line += " parent: " + node.getParent().getValue().toString();
-        }
-        System.out.println(line);
-        print(node.getLeft());
-        print(node.getRight());
-    }
-
     public E find(E findElement) {
         if (this.root == null) {
             return null;
@@ -222,8 +194,10 @@ public class RedBlackTree<E extends Comparable<E>> {
             case 0:
                 return (E) start.getValue();
             case -1:
+                if (start.getLeft().getValue() != null)
                 return findFrom(start.getLeft(), findElement);
             case 1:
+                if (start.getRight().getValue() != null)
                 return findFrom(start.getRight(), findElement);
         }
         return null;
@@ -241,13 +215,15 @@ public class RedBlackTree<E extends Comparable<E>> {
         if (start == null) {
             return null;
         }
-        switch (findElement.compareTo((E) start.getValue())) {
-            case 0:
-                return start;
-            case -1:
-                return findNodeFrom(start.getLeft(), findElement);
-            case 1:
-                return findNodeFrom(start.getRight(), findElement);
+        Comparable<E> currentValue = start.getValue();
+        if (findElement.compareTo((E) currentValue) < 0){
+            if (start.getLeft().getValue() != null)
+            return findNodeFrom(start.getLeft(), findElement);
+        } else if(findElement.compareTo((E) currentValue) > 0) {
+            if (start.getRight().getValue() != null)
+            return findNodeFrom(start.getRight(), findElement);
+        } else {
+            return start;
         }
         return null;
     }
@@ -268,18 +244,18 @@ public class RedBlackTree<E extends Comparable<E>> {
         int count = countChildren(delNode);
 
         switch (count) {
-            case 0:                                           // no children
-            case 1:                                           // 1 child
+            case 0:                         // no children
+            case 1:                         // 1 child
                 removeA01(delNode);
                 break;
-            case 2:                                           // 2 children
+            case 2:                         // 2 children
 
-                if (delNode == root) {                  // deleted node is root
+                if (delNode == root) {      // deleted node is root
                     removeR2(delNode);
                     break;
                 }
 
-                if (delNode.isNodeRed()) {              // deleted node is red
+                if (delNode.isNodeRed()) {  // deleted node is red
                     removeR2(delNode);
                 } else {
                     removeB2(delNode);
@@ -329,7 +305,7 @@ public class RedBlackTree<E extends Comparable<E>> {
     private void removeB2(Node<E> delNode) {                 // Deleted node is black && has 2 children
         Node<E> leftBiggest = findBiggest(delNode.getLeft());
         delNode.setValue(leftBiggest.getValue());
-        removeA01(leftBiggest);                                 // leftBiggest has 1 or 0 children
+        removeA01(leftBiggest);                              // leftBiggest has 1 or 0 children
     }
 
 
@@ -377,8 +353,8 @@ public class RedBlackTree<E extends Comparable<E>> {
     }
 
     private void deleteApply(Node<E> node) {
-        boolean isLeft = isLeftChild(node);                // deleted Node is left child
-        boolean hasLeft = hasLeftChild(node);              // deleted Node has left child
+        boolean isLeft = isLeftChild(node);      // deleted Node is left child
+        boolean hasLeft = hasLeftChild(node);    // deleted Node has left child
         Node<E> child = getChild(node, hasLeft);
         if (node.isNodeRed()) {
             if (child.getValue() == null) {
@@ -424,9 +400,9 @@ public class RedBlackTree<E extends Comparable<E>> {
     }
 
     // node has 0 or 1 child
-    private void removeA01(Node<E> node) {                 // Deleted node has no children or 1 child
-        boolean isLeft = isLeftChild(node);              // deleted Node is left child
-        boolean hasLeft = hasLeftChild(node);              // deleted Node has left child
+    private void removeA01(Node<E> node) {       // Deleted node has no children or 1 child
+        boolean isLeft = isLeftChild(node);      // deleted Node is left child
+        boolean hasLeft = hasLeftChild(node);    // deleted Node has left child
         boolean isBalanced;
         Node<E> child = getChild(node, hasLeft);
 
@@ -452,7 +428,8 @@ public class RedBlackTree<E extends Comparable<E>> {
         deleteApply(node);         // deleting node - we don't need it anymore
         node = child;
 
-        // in a loop applying the red-black deletion balancing algorithms until the tree is balanced
+        // in a loop applying the red-black deletion
+        // balancing algorithms until the tree is balanced
         do {
             isBalanced = true;
 

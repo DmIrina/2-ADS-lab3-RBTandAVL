@@ -18,67 +18,36 @@ class Node<E extends Comparable<E>> {
         }
     }
 
-    public E getValue() {
-        return value;
-    }
+    public E getValue() { return value; }
 
-    public void setValue(E value) {
-        this.value = value;
-    }
+    public void setValue(E value) { this.value = value; }
 
-    public void changeColor() {
-        isRed = !isRed;
-    }
+    public void changeColor() { isRed = !isRed; }
 
-    public void setRed(){
-        isRed = true;
-    }
+    public void setRed(){ isRed = true; }
 
-    public void setBlack(){
-        isRed = false;
-    }
+    public void setBlack(){ isRed = false; }
 
-    public boolean isNodeRed() {
-        return isRed;
-    }
+    public boolean isNodeRed() { return isRed; }
 
-    public Node<E> getLeft() {
-        return left;
-    }
+    public Node<E> getLeft() { return left; }
 
-    public void setLeft(Node<E> left) {
-        this.left = left;
-    }
+    public void setLeft(Node<E> left) { this.left = left; }
 
-    public Node<E> getRight() {
-        return right;
-    }
+    public Node<E> getRight() { return right; }
 
-    public void setRight(Node<E> right) {
-        this.right = right;
-    }
+    public void setRight(Node<E> right) { this.right = right; }
 
-    public Node<E> getParent() {
-        return parent;
-    }
+    public Node<E> getParent() { return parent; }
 
-    public void setParent(Node<E> parent) {
-        this.parent = parent;
-    }
+    public void setParent(Node<E> parent) { this.parent = parent; }
 
     public Node<E> getUncle() {
         Node<E> gp = getGrandparent();
-        if (gp == null) {
-            return null;
-        }
-        if (parent == gp.left) {
-            return gp.right;
-        } else {
-            return gp.left;
-        }
+        if (gp == null) { return null; }
+        if (parent == gp.left) { return gp.right; }
+        else { return gp.left; }
     }
 
-    public Node<E> getGrandparent() {
-        return parent.getParent();
-    }
+    public Node<E> getGrandparent() { return parent.getParent(); }
 }

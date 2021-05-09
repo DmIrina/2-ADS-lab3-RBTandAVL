@@ -74,7 +74,6 @@ public class AVLTree <E extends Comparable<E>> {
     }
 
     private Node<E> findMin(Node<E> startNode){
-        //return startNode.getLeft() != null ? findMin(startNode.getLeft()) : startNode;
         if (startNode.getLeft() != null) {
             return findMin(startNode.getLeft());
         }
@@ -115,5 +114,29 @@ public class AVLTree <E extends Comparable<E>> {
             return balance(min);
         }
         return balance(current);
+    }
+
+    public E find(E findElement) {
+        if (this.root == null) {
+            return null;
+        }
+        return findFrom(this.root, findElement);
+    }
+
+    private E findFrom(Node<E> start, E findElement) {
+        if (start == null) {
+            return null;
+        }
+        switch (findElement.compareTo((E) start.getValue())) {
+            case 0:
+                return (E) start.getValue();
+            case -1:
+                if (start.getLeft() != null)
+                    return findFrom(start.getLeft(), findElement);
+            case 1:
+                if (start.getRight() != null)
+                    return findFrom(start.getRight(), findElement);
+        }
+        return null;
     }
 }

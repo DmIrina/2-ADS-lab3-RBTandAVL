@@ -1,47 +1,75 @@
-import avlTree.AVLTree;
 import redBlackTree.RedBlackTree;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class Main {
-
     public static void main(String[] args) {
         System.out.println("Лабораторна робота 3");
+        System.out.println("Дослідження бінарних дерев пошуку");
+        System.out.println("Червоно-чорне дерево");
 
         RedBlackTree<Integer> rbt = new RedBlackTree<>(14);
+        Random random = new Random();
+        for (int i = 0; i < 100000; i++) {
+            rbt.add(random.nextInt(100000));
+        }
+        ArrayList<Long> measures = new ArrayList<>();
+        for (int i = 0; i < 100000; i++) {
+            long current = System.currentTimeMillis();
+            rbt.add(random.nextInt());
+            long result = System.currentTimeMillis() - current;
+            measures.add(result);
+        }
+        System.out.println("Час вставки:");
+        stat(measures);
 
-        System.out.println("Дослідження бінарних дерев пошуку");
+        measures = new ArrayList<>();
+        for (int i = 0; i < 100000; i++) {
+            long current = System.currentTimeMillis();
+            try {
+                rbt.find(i);
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+            long result = System.currentTimeMillis() - current;
+            measures.add(result);
+        }
+        System.out.println("Час пошуку:");
+        stat(measures);
 
-        rbt.add(10);
-        rbt.add(15);
-        rbt.add(5);
-        rbt.add(11);
-        rbt.add(3);
-        rbt.add(4);
-        rbt.add(100);
-        rbt.add(54);
-        rbt.add(7);
-        rbt.add(65);
-        rbt.add(9);
-        rbt.add(12);
-        rbt.add(34);
-        rbt.add(36);
+        measures = new ArrayList<>();
+        System.out.println("Час видалення:");
+        try {
+            for (int i = 0; i < 100000; i++) {
+                long current = System.currentTimeMillis();
+                rbt.remove(i);
+                long result = System.currentTimeMillis() - current;
+                measures.add(result);
+            }
+            stat(measures);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
-        rbt.remove(10);
-        rbt.printTree();
-
-        AVLTree<Integer> avl = new AVLTree<>(17);
-        avl.add(12);
-        avl.add(38);
-        avl.add(3);
-        avl.add(49);
-        avl.add(19);
-        avl.add(100);
-        avl.add(1);
-        avl.add(29);
-        avl.add(46);
-        avl.delete(17);
-        avl.delete(38);
-
-
-        int k =1;
+    public static void stat(ArrayList<Long> measures){
+        long max = measures.get(0);
+        long min = measures.get(0);
+        double average = 0;
+        long sum = 0;
+        for (long i : measures) {
+            sum += i;
+            if (i < min) {
+                min = i;
+                continue;
+            }
+            if (i > max) {
+                max = i;
+            }
+        }
+        average = sum / measures.size();
+        System.out.println("Максимальний час: " + max);
+        System.out.println("Мінімальний час: " + min);
+        System.out.println("Середній час: " + average + "\n");
     }
 }
