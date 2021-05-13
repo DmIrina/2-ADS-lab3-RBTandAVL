@@ -15,9 +15,9 @@ public class Main {
         }
         ArrayList<Long> measures = new ArrayList<>();
         for (int i = 0; i < 100000; i++) {
-            long current = System.currentTimeMillis();
+            long current = System.nanoTime();
             rbt.add(random.nextInt());
-            long result = System.currentTimeMillis() - current;
+            long result = System.nanoTime() - current;
             measures.add(result);
         }
         System.out.println("Час вставки:");
@@ -25,13 +25,13 @@ public class Main {
 
         measures = new ArrayList<>();
         for (int i = 0; i < 100000; i++) {
-            long current = System.currentTimeMillis();
+            long current = System.nanoTime();
             try {
                 rbt.find(i);
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
             }
-            long result = System.currentTimeMillis() - current;
+            long result = System.nanoTime() - current;
             measures.add(result);
         }
         System.out.println("Час пошуку:");
@@ -41,15 +41,15 @@ public class Main {
         System.out.println("Час видалення:");
         try {
             for (int i = 0; i < 100000; i++) {
-                long current = System.currentTimeMillis();
+                long current = System.nanoTime();
                 rbt.remove(i);
-                long result = System.currentTimeMillis() - current;
+                long result = System.nanoTime() - current;
                 measures.add(result);
             }
-            stat(measures);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
+        stat(measures);
     }
 
     public static void stat(ArrayList<Long> measures){

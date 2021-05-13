@@ -27,19 +27,15 @@ public class RedBlackTree<E extends Comparable<E>> {
             return;
         }
         case3(node);
-
     }
 
     private void case3(Node<E> node) {
-
         if (node.getParent() == null) {
             case2(node);
         }
-
         Node<E> gp = node.getGrandparent();
         Node<E> p = node.getParent();
         Node<E> u = node.getUncle();
-
         if (u.isNodeRed()) {     //parent is red, uncle is red
             p.changeColor();
             u.changeColor();
@@ -249,27 +245,26 @@ public class RedBlackTree<E extends Comparable<E>> {
         if (delNode == null) {
             return;
         }
-
+        if (find(value) == null) {
+            return;
+        }
         int count = countChildren(delNode);
 
+        // 1 child
+        // 2 children
         switch (count) {
-            case 0:                         // no children
-            case 1:                         // 1 child
-                removeA01(delNode);
-                break;
-            case 2:                         // 2 children
-
+            case 0, 1 -> removeA01(delNode);
+            case 2 -> {
                 if (delNode == root) {      // deleted node is root
                     removeR2(delNode);
                     break;
                 }
-
                 if (delNode.isNodeRed()) {  // deleted node is red
                     removeR2(delNode);
                 } else {
                     removeB2(delNode);
                 }
-                break;
+            }
         }
     }
 
@@ -429,9 +424,9 @@ public class RedBlackTree<E extends Comparable<E>> {
             return;
         }
 
-        if (node == root) {
-            return;
-        }
+//        if (node == root) {
+//            return;
+//        }
 
         Node<E> dad;
         Node<E> brother;
@@ -444,9 +439,10 @@ public class RedBlackTree<E extends Comparable<E>> {
         // in a loop applying the red-black deletion
         // balancing algorithms until the tree is balanced
         isBalanced = true;
-        do {
-            if (node != root) {
-                if (node.getValue() != null) {
+        if (node.getValue() != null) {
+            do {
+                if (node != root) {
+
                     dad = node.getParent();
                     isLeft = isLeftChild(node);
                     hasLeft = hasLeftChild(node);
@@ -518,9 +514,10 @@ public class RedBlackTree<E extends Comparable<E>> {
                         }
                     }
                 }
-            } else
-            isBalanced = false;
+            }
+            while (isBalanced);
+        } else{
+            return;
         }
-        while (isBalanced);
     }
 }
