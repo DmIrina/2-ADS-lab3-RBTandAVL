@@ -191,19 +191,32 @@ public class RedBlackTree<E extends Comparable<E>> {
         if (start == null) {
             return null;
         }
-        switch (findElement.compareTo((E) start.getValue())) {
-            case 0:
-                return (E) start.getValue();
-            case -1:
-                if (start.getLeft().getValue() != null)
-                    return findFrom(start.getLeft(), findElement);
-            case 1:
-                if (start.getRight().getValue() != null)
-                    return findFrom(start.getRight(), findElement);
+        Node<E> current = start;
+        boolean res = true;
+        Comparable<E> currentValue = current.getValue();
+        while (res) {
+            if (findElement.compareTo((E) currentValue) < 0) {
+                if (current.getLeft().getValue() == null) {
+                    res = false;
+                    return null;
+
+                } else {
+                    current = current.getLeft();
+                }
+            } else if (findElement.compareTo((E) currentValue) > 0) {
+                if (current.getRight().getValue() == null) {
+                    res = false;
+                    return null;
+                } else {
+                    current = current.getRight();
+                }
+            } else {
+                res = false;
+                return current.getValue();
+            }
         }
         return null;
     }
-
 
     private Node<E> findNode(E findElement) {
         if (this.root == null) {
@@ -211,6 +224,7 @@ public class RedBlackTree<E extends Comparable<E>> {
         }
         return findNodeFrom(this.root, findElement);
     }
+
 
     private Node<E> findNodeFrom(Node<E> start, E findElement) {
         if (start == null) {
@@ -423,11 +437,6 @@ public class RedBlackTree<E extends Comparable<E>> {
             deleteApply(node);
             return;
         }
-
-//        if (node == root) {
-//            return;
-//        }
-
         Node<E> dad;
         Node<E> brother;
         Node<E> farNephew;
@@ -516,7 +525,7 @@ public class RedBlackTree<E extends Comparable<E>> {
                 }
             }
             while (isBalanced);
-        } else{
+        } else {
             return;
         }
     }

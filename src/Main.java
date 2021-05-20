@@ -8,15 +8,12 @@ public class Main {
         System.out.println("Дослідження бінарних дерев пошуку");
         System.out.println("Червоно-чорне дерево");
 
-        RedBlackTree<Integer> rbt = new RedBlackTree<>(14);
-        Random random = new Random();
-        for (int i = 0; i < 100000; i++) {
-            rbt.add(random.nextInt(100000));
-        }
+        RedBlackTree<Integer> rbt = new RedBlackTree<>(5);
         ArrayList<Long> measures = new ArrayList<>();
-        for (int i = 0; i < 100000; i++) {
+
+        for (int i = 0; i < 1000000; i++) {
             long current = System.nanoTime();
-            rbt.add(random.nextInt());
+            rbt.add(i);
             long result = System.nanoTime() - current;
             measures.add(result);
         }
@@ -24,7 +21,7 @@ public class Main {
         stat(measures);
 
         measures = new ArrayList<>();
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 1000000; i++) {
             long current = System.nanoTime();
             try {
                 rbt.find(i);
@@ -40,7 +37,7 @@ public class Main {
         measures = new ArrayList<>();
         System.out.println("Час видалення:");
         try {
-            for (int i = 0; i < 100000; i++) {
+            for (int i = 0; i < 1000000; i++) {
                 long current = System.nanoTime();
                 rbt.remove(i);
                 long result = System.nanoTime() - current;
@@ -55,10 +52,7 @@ public class Main {
     public static void stat(ArrayList<Long> measures){
         long max = measures.get(0);
         long min = measures.get(0);
-        double average = 0;
-        long sum = 0;
         for (long i : measures) {
-            sum += i;
             if (i < min) {
                 min = i;
                 continue;
@@ -67,9 +61,7 @@ public class Main {
                 max = i;
             }
         }
-        average = sum / measures.size();
         System.out.println("Максимальний час: " + max);
-        System.out.println("Мінімальний час: " + min);
-        System.out.println("Середній час: " + average + "\n");
+        System.out.println("Мінімальний час: " + min +  "\n");
     }
 }
